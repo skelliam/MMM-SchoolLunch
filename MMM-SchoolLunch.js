@@ -1,23 +1,88 @@
 /* global Module */
 
 /* Magic Mirror
- * Module: HelloWorld
+ * Module: MMM-SchoolLunch
  *
- * By Michael Teeuw http://michaelteeuw.nl
+ * By William Skellenger http://github.com/skelliam
  * MIT Licensed.
  */
 
 Module.register("MMM-SchoolLunch",{
 
-	// Default module config.
-	defaults: {
-		text: "Hello World!"
-	},
+    // Default module config.
+    defaults: {
+        text: "Hello World!",
+        interval: 300000 * 10,  //50 minutes
+        url: '',      /* url to get school lunch schedule in JSON format */
+    },
 
-	// Override dom generator.
-	getDom: function() {
-		var wrapper = document.createElement("div");
-		wrapper.innerHTML = this.config.text;
-		return wrapper;
-	}
+    getScripts: function() {
+        return [this.file('vendor/jquery.min.js')];
+    },
+
+    getStyles: function() {
+        return ['schoollunch.css', 'font-awesome.css'];
+    },
+
+    start: function() {
+        console.log("Starting MMM-SchoolLunch");
+        this.loaded = false;
+        this.urlenc = encodeURI(this.config.url);
+        this.lunchdata = null;
+        this.date = null;
+        this.update(this);
+    },
+
+    update: function(self) {
+        console.log("inside update");
+
+        self.date = new Date(),
+           locale = "en-us",
+           self.month = self.date.toLocaleString(locale, { month: "long" }),
+           self.weekday = self.date.toLocaleString(locale, {weekday: "long"});
+
+        self.day = self.date.getDate();
+
+        $.getJSON(self.urlenc, "", function(data) {
+            self.lunchdata = data;  //raw json data
+            self.updateDom();
+        });
+
+        setTimeout(self.update, self.config.interval, self);
+    },
+
+    getDom: function() {
+        var weeknum;
+        var wrapper = $('<div class="lunch normal small">');
+        var table = $('<table>');
+
+        console.log(this.lunchdata);
+
+        //if anything not initialized then return right now
+        if ((this.lunchdata == null) || (this.date == null)) {
+            return wrapper.get(0);
+        }
+
+        for (let week of Object.keys(this.lunchdata.calendarweek_calc[this.month])) {
+            for (let day of this.lunchdata.calendarweek_calc[this.month][week]) {
+                if (day == this.day) {
+                    weeknum = week;
+                    break;
+                }
+            }
+        }
+
+        console.log(weeknum);
+
+        //choice 1
+        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice1"][this.weekday] + "");
+        //choice 2
+        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "");
+        //choice 3
+        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice3"][this.weekday] + "");
+
+        wrapper.append(table);
+
+        return wrapper.get(0);
+    }
 });
