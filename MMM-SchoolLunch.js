@@ -11,8 +11,7 @@ Module.register("MMM-SchoolLunch",{
 
     // Default module config.
     defaults: {
-        text: "Hello World!",
-        interval: 300000 * 10,  //50 minutes
+        interval: 7200000,  /* 120 minutes */
         url: '',      /* url to get school lunch schedule in JSON format */
     },
 
@@ -30,7 +29,7 @@ Module.register("MMM-SchoolLunch",{
         this.urlenc = encodeURI(this.config.url);
         this.lunchdata = null;
         this.date = null;
-        this.update(this);
+        this.update(this); 
     },
 
     update: function(self) {
@@ -53,8 +52,10 @@ Module.register("MMM-SchoolLunch",{
 
     getDom: function() {
         var weeknum;
-        var wrapper = $('<div class="lunch normal small">');
-        var table = $('<table>');
+        var wrapper = $('<div class="normal small">');
+        var table = $('<table class="small">');
+        var symbol = $('<td class="symbol"><span class="fa fa-cutlery"></span></td>');
+        var row = $('<tr>').append(symbol);
 
         console.log(this.lunchdata);
 
@@ -74,15 +75,14 @@ Module.register("MMM-SchoolLunch",{
 
         console.log(weeknum);
 
-        //choice 1
-        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice1"][this.weekday] + "");
-        //choice 2
-        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "");
-        //choice 3
-        $(table).append("<tr><td>" + this.lunchdata.lunch_choices["choice3"][this.weekday] + "");
+        //append three choices
+        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice1"][this.weekday]));
+        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday]));
+        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice3"][this.weekday]));
 
         wrapper.append(table);
 
+        //return DOM object
         return wrapper.get(0);
     }
 });

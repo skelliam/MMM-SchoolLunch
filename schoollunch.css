@@ -1,4 +1,10 @@
 .MMM-SchoolLunch {
-    width:inherit;
+    width: 30ch;
+}
+
+.MMM-SchoolLunch .symbol {
+    padding-left: 0;
+    padding-right: 10px;
+    font-size: 80%;
 }
 
