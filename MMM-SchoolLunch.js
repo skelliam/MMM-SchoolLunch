@@ -29,17 +29,36 @@ Module.register("MMM-SchoolLunch",{
         this.urlenc = encodeURI(this.config.url);
         this.lunchdata = null;
         this.date = null;
+        this.lunchtomorrow = false;
         this.update(this); 
+    },
+
+    getHeader: function() {
+        var header = this.data.header;
+        header += (this.lunchtomorrow ? " TOMORROW" : " TODAY");
+        return header;
     },
 
     update: function(self) {
         console.log("inside update");
 
         self.date = new Date(),
-           locale = "en-us",
-           self.month = self.date.toLocaleString(locale, { month: "long" }),
-           self.weekday = self.date.toLocaleString(locale, {weekday: "long"});
+           locale = "en-us";
 
+        if (self.date.getHours() >= 14) {
+            self.date.setDate(self.date.getDate() + 1);
+            self.lunchtomorrow = true;
+        }
+        else {
+            self.lunchtomorrow = false;
+        }
+
+        //for testing
+        //self.date.setDate(self.date.getDate() - 1);
+        //self.lunchtomorrow = true;
+
+        self.month = self.date.toLocaleString(locale, { month: "long" }),
+        self.weekday = self.date.toLocaleString(locale, {weekday: "long"});
         self.day = self.date.getDate();
 
         $.getJSON(self.urlenc, "", function(data) {
@@ -54,8 +73,9 @@ Module.register("MMM-SchoolLunch",{
         var weeknum;
         var wrapper = $('<div class="normal small">');
         var table = $('<table class="small">');
-        var symbol = $('<td class="symbol"><span class="fa fa-cutlery"></span></td>');
-        var row = $('<tr>').append(symbol);
+        var foodsymbol =     $('<td class="symbol"><span class="fa fa-cutlery"></span></td>');
+        var noschoolsymbol = $('<td class="symbol"><span class="fa fa-child"></span></td>');
+        var row = $('<tr class="normal">');
 
         console.log(this.lunchdata);
 
@@ -73,17 +93,24 @@ Module.register("MMM-SchoolLunch",{
             }
         }
 
-        //if Saturday or Sunday, nothing to do
-        if ((this.weekday == "Saturday") || (this.weekday == "Sunday")) {
-            $(table).append("<tr>").append("<td>No School!</td>");
+        console.log("Weeknum: " + weeknum);
+
+        if (weeknum === undefined)  //weekend or summer break or school holiday
+        {   
+            row.append(noschoolsymbol);
+            $(table).append(row.clone().append("<td>No school"
+                        + (this.lunchtomorrow ? " tomorrow." : " today.") + "</td>"));
         }
         else {
-            console.log(weeknum);
+            row.append(foodsymbol);
 
             //append three choices
-            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice1"][this.weekday]));
-            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday]));
-            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice3"][this.weekday]));
+            $(table).append(row.clone().append("<td>" 
+                        + this.lunchdata.lunch_choices["choice1"][this.weekday] + "</td>"));
+            $(table).append(row.clone().append("<td>" 
+                        + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "</td>"));
+            $(table).append(row.clone().append("<td>" 
+                        + this.lunchdata.lunch_choices["choice3"][this.weekday]+ "</td>"));
         }
 
         wrapper.append(table);
