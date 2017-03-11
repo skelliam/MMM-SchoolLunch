@@ -73,12 +73,18 @@ Module.register("MMM-SchoolLunch",{
             }
         }
 
-        console.log(weeknum);
+        //if Saturday or Sunday, nothing to do
+        if ((this.weekday == "Saturday") || (this.weekday == "Sunday")) {
+            $(table).append("<tr>").append("<td>No School!</td>");
+        }
+        else {
+            console.log(weeknum);
 
-        //append three choices
-        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice1"][this.weekday]));
-        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday]));
-        $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice3"][this.weekday]));
+            //append three choices
+            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice1"][this.weekday]));
+            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday]));
+            $(table).append(row.clone().append("<td>" + this.lunchdata.lunch_choices["choice3"][this.weekday]));
+        }
 
         wrapper.append(table);
 
