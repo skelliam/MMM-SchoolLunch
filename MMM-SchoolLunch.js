@@ -74,7 +74,7 @@ Module.register("MMM-SchoolLunch",{
         var wrapper = $('<div class="normal small">');
         var table = $('<table class="small">');
         var foodsymbol =     $('<td class="symbol"><span class="fa fa-cutlery"></span></td>');
-        var noschoolsymbol = $('<td class="symbol"><span class="fa fa-child"></span></td>');
+        var noschoolsymbol = $('<td class="symbol"><span class="fa fa-info-circle"></span></td>');
         var row = $('<tr class="normal">');
 
         console.log(this.lunchdata);
