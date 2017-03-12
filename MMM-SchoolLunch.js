@@ -29,13 +29,13 @@ Module.register("MMM-SchoolLunch",{
         this.urlenc = encodeURI(this.config.url);
         this.lunchdata = null;
         this.date = null;
-        this.lunchtomorrow = false;
+        this.showtomorrow = false;
         this.update(this); 
     },
 
     getHeader: function() {
         var header = this.data.header;
-        header += (this.lunchtomorrow ? " TOMORROW" : " TODAY");
+        header += (this.showtomorrow ? " TOMORROW" : " TODAY");
         return header;
     },
 
@@ -47,15 +47,15 @@ Module.register("MMM-SchoolLunch",{
 
         if (self.date.getHours() >= 14) {
             self.date.setDate(self.date.getDate() + 1);
-            self.lunchtomorrow = true;
+            self.showtomorrow = true;
         }
         else {
-            self.lunchtomorrow = false;
+            self.showtomorrow = false;
         }
 
         //for testing
         //self.date.setDate(self.date.getDate() - 1);
-        //self.lunchtomorrow = true;
+        //self.showtomorrow = true;
 
         self.month = self.date.toLocaleString(locale, { month: "long" }),
         self.weekday = self.date.toLocaleString(locale, {weekday: "long"});
@@ -99,7 +99,7 @@ Module.register("MMM-SchoolLunch",{
         {   
             row.append(noschoolsymbol);
             $(table).append(row.clone().append("<td>No school"
-                        + (this.lunchtomorrow ? " tomorrow." : " today.") + "</td>"));
+                        + (this.showtomorrow ? " tomorrow" : " today") + "</td>"));
         }
         else {
             row.append(foodsymbol);
