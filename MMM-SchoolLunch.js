@@ -104,20 +104,15 @@ Module.register("MMM-SchoolLunch",{
         else {
             row.append(foodsymbol);
 
-            //append three choices
-            if (this.lunchdata.lunch_choices["choice1"][this.weekday] != undefined) {
-                $(table).append(row.clone().append("<td>" 
-                            + this.lunchdata.lunch_choices["choice1"][this.weekday] + "</td>"));
-            }
-
-            if (this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] != undefined) {
-                $(table).append(row.clone().append("<td>" 
-                            + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "</td>"));
-            }
-
-            if (this.lunchdata.lunch_choices["choice3"][this.weekday] != undefined) {
-                $(table).append(row.clone().append("<td>" 
-                            + this.lunchdata.lunch_choices["choice3"][this.weekday]+ "</td>"));
+            for (choice of ["choice1", "choice2", "choice3"]) {
+                var food = undefined;
+                if (food == undefined)
+                    food = this.lunchdata.lunch_choices[choice][this.weekday];
+                if (food == undefined)
+                    food = this.lunchdata.lunch_choices[choice][weeknum][this.weekday];
+                if (food) {
+                    $(table).append(row.clone().append("<td>" + food + "</td>"));
+                }
             }
         }
 
