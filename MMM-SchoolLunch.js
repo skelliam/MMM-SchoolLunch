@@ -104,13 +104,34 @@ Module.register("MMM-SchoolLunch",{
         else {
             row.append(foodsymbol);
 
-            for (choice of ["choice1", "choice2", "choice3"]) {
+            for (let choice of ["choice1", "choice2", "choice3"]) {
+                var choices = this.lunchdata.lunch_choices[choice];
                 var food = undefined;
-                if (food == undefined)
-                    food = this.lunchdata.lunch_choices[choice][this.weekday];
-                if (food == undefined)
-                    food = this.lunchdata.lunch_choices[choice][weeknum][this.weekday];
-                if (food) {
+
+                //break if choice doesn't exist
+                if (choices == undefined) {
+                    continue;
+                }
+
+                if (choices.hasOwnProperty(this.weekday)) {
+                    if (choices[this.weekday].hasOwnProperty(weeknum)) {
+                        //choice1, Monday, week2
+                        food = choices[this.weekday][weeknum];
+                    }
+                    else {
+                        //choice1, Monday
+                        food = choices[this.weekday];
+                    }
+                }
+
+                if (choices.hasOwnProperty(weeknum)) {
+                    if (choices[weeknum].hasOwnProperty(this.weekday)) {
+                        //choice1, week2, Monday
+                        food = choices[weeknum][this.weekday];
+                    }
+                }
+
+                if (food != undefined) {
                     $(table).append(row.clone().append("<td>" + food + "</td>"));
                 }
             }
