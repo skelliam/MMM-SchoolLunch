@@ -43,7 +43,7 @@ Module.register("MMM-SchoolLunch",{
         console.log("inside update");
 
         self.date = new Date(),
-           locale = "en-us";
+        locale = "en-us";
 
         if (self.date.getHours() >= 14) {
             self.date.setDate(self.date.getDate() + 1);
@@ -105,12 +105,20 @@ Module.register("MMM-SchoolLunch",{
             row.append(foodsymbol);
 
             //append three choices
-            $(table).append(row.clone().append("<td>" 
-                        + this.lunchdata.lunch_choices["choice1"][this.weekday] + "</td>"));
-            $(table).append(row.clone().append("<td>" 
-                        + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "</td>"));
-            $(table).append(row.clone().append("<td>" 
-                        + this.lunchdata.lunch_choices["choice3"][this.weekday]+ "</td>"));
+            if (this.lunchdata.lunch_choices["choice1"][this.weekday] != undefined) {
+                $(table).append(row.clone().append("<td>" 
+                            + this.lunchdata.lunch_choices["choice1"][this.weekday] + "</td>"));
+            }
+
+            if (this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] != undefined) {
+                $(table).append(row.clone().append("<td>" 
+                            + this.lunchdata.lunch_choices["choice2"][weeknum][this.weekday] + "</td>"));
+            }
+
+            if (this.lunchdata.lunch_choices["choice3"][this.weekday] != undefined) {
+                $(table).append(row.clone().append("<td>" 
+                            + this.lunchdata.lunch_choices["choice3"][this.weekday]+ "</td>"));
+            }
         }
 
         wrapper.append(table);
